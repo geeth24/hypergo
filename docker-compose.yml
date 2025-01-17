@@ -10,11 +10,10 @@ services:
       - ./server/shortcuts.json:/app/shortcuts.json
       - ./logs:/app/logs
     restart: unless-stopped
-    environment:
-      - NODE_ENV=production
-      - PORT=8079
+    env_file:
+      - .env
     healthcheck:
-      test: ["CMD", "wget", "--spider", "http://localhost:8079/admin"]
+      test: ["CMD", "wget", "--spider", "https://go.geethg.com/admin"]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -29,10 +28,9 @@ services:
       - "3002:3000"
     volumes:
       - ./client:/app
-    command: ["pnpm", "run", "dev"]  # Start in development mode with hot-reload
-    environment:
-      - NEXT_PUBLIC_API_URL=https://go.geethg.com
-      - API_URL=http://server:8079
+    command: ["pnpm", "run", "dev"]
+    env_file:
+      - .env
     depends_on:
       - hypergo-server
     networks:

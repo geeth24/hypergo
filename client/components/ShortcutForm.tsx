@@ -1,13 +1,12 @@
 'use client'
 
-import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import * as z from 'zod'
 import { Button } from "@/components/ui/button"
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
-import { useToast } from "@/components/ui/use-toast"
+import { useToast } from '@/hooks/use-toast'
 
 const formSchema = z.object({
   shortcode: z.string().min(1, {
@@ -30,7 +29,7 @@ export default function ShortcutForm() {
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     try {
-      const response = await fetch('http://localhost:8079/api/shortcuts', {
+      const response = await fetch('https://go.geethg.com/api/shortcuts', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

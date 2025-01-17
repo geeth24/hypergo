@@ -14,7 +14,7 @@ services:
       - NODE_ENV=production
       - PORT=8079
     healthcheck:
-      test: ["CMD", "wget", "--spider", "http://localhost:8079/admin"]
+      test: ["CMD", "wget", "--spider", "https://go.geethg.com/admin"]
       interval: 30s
       timeout: 10s
       retries: 3

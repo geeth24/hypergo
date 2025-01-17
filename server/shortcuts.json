@@ -1,11 +1,11 @@
 {
   "firebase": {
-    "url": "https://firebase.google.com",
+    "url": "https://console.firebase.google.com",
     "createdAt": "2025-01-17T07:31:58.633Z",
     "clicks": 0
   },
   "appstore": {
-    "url": "https://apps.apple.com",
+    "url": "https://appstoreconnect.apple.com/",
     "createdAt": "2025-01-17T07:31:58.636Z",
     "clicks": 0
   },

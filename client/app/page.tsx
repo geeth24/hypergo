@@ -1,5 +1,5 @@
-import ShortcutList from './components/ShortcutList'
-import ShortcutForm from './components/ShortcutForm'
+import ShortcutForm from "@/components/ShortcutForm"
+import ShortcutList from "@/components/ShortcutList"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 
 export default function Home() {

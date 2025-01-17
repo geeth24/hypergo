@@ -16,7 +16,7 @@ export default function ShortcutStats({ params }: { params: { shortcode: string 
   const [shortcut, setShortcut] = useState<Shortcut | null>(null)
 
   useEffect(() => {
-    fetch(`http://localhost:8079/api/shortcuts/${params.shortcode}/stats`)
+    fetch(`https://go.geethg.com/api/shortcuts/${params.shortcode}/stats`)
       .then(response => response.json())
       .then(data => setShortcut(data))
   }, [params.shortcode])

@@ -33,16 +33,7 @@ async function loadShortcuts(): Promise<void> {
     console.log('Loaded shortcuts:', shortcuts);
   } catch (error) {
     shortcuts = {
-      'firebase': {
-        url: 'https://firebase.google.com',
-        createdAt: new Date().toISOString(),
-        clicks: 0
-      },
-      'appstore': {
-        url: 'https://apps.apple.com',
-        createdAt: new Date().toISOString(),
-        clicks: 0
-      }
+      
     };
     await saveShortcuts();
   }

@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Skeleton } from "@/components/ui/skeleton"
 
@@ -16,7 +16,7 @@ export default function ShortcutList() {
   const [shortcuts, setShortcuts] = useState<Record<string, Shortcut> | null>(null)
 
   useEffect(() => {
-    fetch('http://localhost:8079/api/shortcuts')
+    fetch('https://go.geethg.com/api/shortcuts')
       .then(response => response.json())
       .then(data => setShortcuts(data))
   }, [])
@@ -47,9 +47,9 @@ export default function ShortcutList() {
         <Card key={shortcode}>
           <CardHeader>
             <CardTitle>{shortcode}</CardTitle>
-            <CardDescription>{shortcut.url}</CardDescription>
           </CardHeader>
           <CardContent>
+            <p className="text-sm text-muted-foreground">{shortcut.url}</p>
             <p className="text-sm text-muted-foreground">Clicks: {shortcut.clicks}</p>
           </CardContent>
           <CardFooter>
