@@ -1,5 +1,5 @@
 # Base image for development
-FROM node:20-alpine AS dev
+FROM node:18-alpine AS dev
 
 WORKDIR /app
 
