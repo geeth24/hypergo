@@ -28,6 +28,7 @@ services:
       - "3002:3000"
     environment:
       - NODE_ENV=production
+      - NEXT_TELEMETRY_DISABLED=1
     networks:
       - hypergo_network
     depends_on:

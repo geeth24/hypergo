@@ -15,11 +15,18 @@ RUN pnpm install --frozen-lockfile
 # Copy the rest of the application code
 COPY . .
 
-# Build the Next.js application
-RUN pnpm run build
+# Debug: List contents before build
+RUN ls -la
+
+# Build the Next.js application with verbose logging
+RUN pnpm run build --verbose
+
+# Debug: List contents after build
+RUN ls -la
+RUN ls -la .next || echo ".next directory not found"
 
 # Expose the Next.js port
 EXPOSE 3000
 
 # Start the production server
-CMD ["pnpm", "start"]
+CMD ["sh", "-c", "ls -la && pnpm run build && pnpm start"]
