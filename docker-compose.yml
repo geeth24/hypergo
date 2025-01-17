@@ -20,15 +20,14 @@ services:
 
   hypergo-frontend:
     build: 
-      context: ./client
-      dockerfile: Dockerfile
+      context: ./client            # Points to the client directory
+      dockerfile: Dockerfile       # Dockerfile is in the client directory
     container_name: hypergo-frontend
     restart: unless-stopped
     ports:
       - "3002:3000"
     environment:
       - NODE_ENV=production
-      - NEXT_TELEMETRY_DISABLED=1
     networks:
       - hypergo_network
     depends_on:
