@@ -1,32 +1,36 @@
-# Base image for development
-FROM node:18-alpine
+# Build stage
+FROM node:18-alpine AS builder
 
 WORKDIR /app
 
 # Install pnpm globally
 RUN npm install -g pnpm
 
-# Copy package files first to leverage Docker caching
+# Copy package files
 COPY package.json pnpm-lock.yaml ./
 
-# Install dependencies with frozen lockfile for production
+# Install dependencies
 RUN pnpm install --frozen-lockfile
 
-# Copy the rest of the application code
+# Copy source code
 COPY . .
 
-# Debug: List contents before build
-RUN ls -la
+# Build the application
+RUN pnpm run build
 
-# Build the Next.js application with verbose logging
-RUN pnpm run build --verbose
+# Production stage
+FROM node:18-alpine
 
-# Debug: List contents after build
-RUN ls -la
-RUN ls -la .next || echo ".next directory not found"
+WORKDIR /app
 
-# Expose the Next.js port
+# Copy everything from builder stage
+COPY --from=builder /app ./
+
+# Set environment to production
+ENV NODE_ENV=production
+
+# Expose port
 EXPOSE 3000
 
-# Start the production server
-CMD ["sh", "-c", "ls -la && pnpm run build && pnpm start"]
+# Start the application
+CMD ["pnpm", "start"]
