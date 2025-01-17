@@ -20,7 +20,8 @@ interface AddRedirectBody {
 }
 
 const app = express();
-const router = Router();
+const apiRouter = Router();
+const mainRouter = Router();
 
 // Store shortcuts in memory
 let shortcuts: Shortcuts = {};
@@ -60,26 +61,39 @@ loadShortcuts();
 // Middleware
 app.use(cors());
 app.use(express.json());
+app.use(express.static(path.join(__dirname, '../public')));
 
-// API Routes
-router.get('/health', (_req: Request, res: Response) => {
-  res.json({ status: 'healthy' });
-});
-
-router.get('/shortcuts/:shortcode', async (req: Request, res: Response) => {
+// Main redirect route (this needs to be before API routes)
+mainRouter.get('/:shortcode', async (req: Request, res: Response) => {
   const { shortcode } = req.params;
   const shortcut = shortcuts[shortcode];
   
   if (shortcut) {
     shortcuts[shortcode].clicks++;
     await saveShortcuts();
+    res.redirect(301, shortcut.url);
+  } else {
+    res.status(404).send('Shortcode not found');
+  }
+});
+
+// API Routes
+apiRouter.get('/health', (_req: Request, res: Response) => {
+  res.json({ status: 'healthy' });
+});
+
+apiRouter.get('/shortcuts/:shortcode', async (req: Request, res: Response) => {
+  const { shortcode } = req.params;
+  const shortcut = shortcuts[shortcode];
+  
+  if (shortcut) {
     res.json({ url: shortcut.url });
   } else {
     res.status(404).json({ error: 'Shortcode not found' });
   }
 });
 
-router.post('/shortcuts', async (req: Request, res: Response) => {
+apiRouter.post('/shortcuts', async (req: Request, res: Response) => {
   const { shortcode, url } = req.body as AddRedirectBody;
   
   if (!shortcode || !url) {
@@ -103,11 +117,11 @@ router.post('/shortcuts', async (req: Request, res: Response) => {
   }
 });
 
-router.get('/shortcuts', (_req: Request, res: Response) => {
+apiRouter.get('/shortcuts', (_req: Request, res: Response) => {
   res.json(shortcuts);
 });
 
-router.get('/shortcuts/:shortcode/stats', (req: Request, res: Response) => {
+apiRouter.get('/shortcuts/:shortcode/stats', (req: Request, res: Response) => {
   const { shortcode } = req.params;
   const shortcut = shortcuts[shortcode];
   
@@ -118,14 +132,16 @@ router.get('/shortcuts/:shortcode/stats', (req: Request, res: Response) => {
   }
 });
 
-// Use the router with /api prefix
-app.use('/api', router);
+// Mount routers
+app.use('/api', apiRouter);  // API endpoints under /api
+app.use('/', mainRouter);    // Main redirect functionality at root
 
 const PORT = process.env.PORT || 8079;
 const startServer = async () => {
   try {
     await app.listen(PORT);
-    console.log(`✨ API Server running on port ${PORT}`);
+    console.log(`✨ Server running on port ${PORT}`);
+    console.log(`📎 Try going to: http://go/firebase`);
   } catch (error) {
     if ((error as NodeJS.ErrnoException).code === 'EADDRINUSE') {
       console.error(`⚠️  Port ${PORT} is in use. Trying ${Number(PORT) + 1}...`);
