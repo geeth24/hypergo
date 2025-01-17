@@ -1,0 +1,17 @@
+{
+  "firebase": {
+    "url": "https://firebase.google.com",
+    "createdAt": "2025-01-17T07:31:58.633Z",
+    "clicks": 0
+  },
+  "appstore": {
+    "url": "https://apps.apple.com",
+    "createdAt": "2025-01-17T07:31:58.636Z",
+    "clicks": 0
+  },
+  "cf": {
+    "url": "https://dash.cloudflare.com/02c7076253769a7cc8c3f76a79c9c21d/home/domains",
+    "createdAt": "2025-01-17T07:36:31.044Z",
+    "clicks": 0
+  }
+}

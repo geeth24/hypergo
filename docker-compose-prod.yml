@@ -1,0 +1,26 @@
+services:
+  hypergo-server:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    container_name: hypergo-server
+    ports:
+      - "80:8079"
+    volumes:
+      - ./server/shortcuts.json:/app/shortcuts.json
+      - ./logs:/app/logs
+    restart: unless-stopped
+    environment:
+      - NODE_ENV=production
+      - PORT=8079
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "http://localhost:8079/admin"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    networks:
+      - hypergo_network
+      
+networks:
+  hypergo_network:
+    driver: bridge
