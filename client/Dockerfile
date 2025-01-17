@@ -9,8 +9,8 @@ RUN npm install -g pnpm
 # Copy package files first to leverage Docker caching
 COPY package.json pnpm-lock.yaml ./
 
-# Install dependencies
-RUN pnpm install
+# Install dependencies with frozen lockfile for production
+RUN pnpm install --frozen-lockfile
 
 # Copy the rest of the application code
 COPY . .
@@ -21,5 +21,5 @@ RUN pnpm run build
 # Expose the Next.js port
 EXPOSE 3000
 
-# Start the application
+# Start the production server
 CMD ["pnpm", "start"]

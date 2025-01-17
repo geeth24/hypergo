@@ -19,16 +19,19 @@ services:
       - hypergo_network
 
   hypergo-frontend:
-    build: ./client
+    build: 
+      context: ./client
+      dockerfile: Dockerfile
     container_name: hypergo-frontend
     restart: unless-stopped
     ports:
       - "3002:3000"
-    command: ["pnpm", "run", "start"]
-    depends_on:
-      - hypergo-server
+    environment:
+      - NODE_ENV=production
     networks:
       - hypergo_network
+    depends_on:
+      - hypergo-server
 
 networks:
   hypergo_network:
