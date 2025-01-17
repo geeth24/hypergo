@@ -9,7 +9,6 @@ RUN npm install -g pnpm
 # Copy package.json and pnpm-lock.yaml to install dependencies
 COPY package.json pnpm-lock.yaml ./
 
-
 # Install all dependencies
 RUN pnpm install
 
@@ -18,3 +17,6 @@ COPY . .
 
 # Expose the Next.js dev server port
 EXPOSE 3000
+
+# Default command
+CMD ["pnpm", "run", "start"]
