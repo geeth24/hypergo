@@ -6,7 +6,6 @@ on:
       - master
     paths:
       - 'server/**'
-      - 'bridge/**'
       - 'docker-compose*.yml'
       - '.env'
       - '.github/workflows/deploy.yml'
