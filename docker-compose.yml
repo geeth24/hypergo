@@ -34,7 +34,7 @@ services:
       - NEXT_PUBLIC_API_URL=https://go.geethg.com
       - API_URL=http://server:8079
     depends_on:
-      - server
+      - hypergo-server
     networks:
       - hypergo_network
 
