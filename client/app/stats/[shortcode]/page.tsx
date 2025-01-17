@@ -32,7 +32,11 @@ export default function StatsPage() {
         const data = await response.json();
         setShortcut(data);
       } catch (err) {
-        setError('Failed to load shortcut data. Please try again later.');
+        if (err instanceof Error) {
+          setError('Failed to load shortcut data. Please try again later. ' + err.message);
+        } else {
+          setError('Failed to load shortcut data. Please try again later.');
+        }
       } finally {
         setIsLoading(false);
       }
@@ -56,7 +60,11 @@ export default function StatsPage() {
       const data = await response.json();
       setShortcut(data);
     } catch (err) {
-      setError('Failed to update shortcut data. Please try again later.');
+      if (err instanceof Error) {
+        setError('Failed to update shortcut data. Please try again later. ' + err.message);
+      } else {
+        setError('Failed to update shortcut data. Please try again later.');
+      }
     }
   };
 
