@@ -1,22 +1,25 @@
 # Base image for development
-FROM node:18-alpine AS dev
+FROM node:18-alpine
 
 WORKDIR /app
 
 # Install pnpm globally
 RUN npm install -g pnpm
 
-# Copy package.json and pnpm-lock.yaml to install dependencies
+# Copy package files first to leverage Docker caching
 COPY package.json pnpm-lock.yaml ./
 
-# Install all dependencies
+# Install dependencies
 RUN pnpm install
 
-# Copy all source code
+# Copy the rest of the application code
 COPY . .
 
-# Expose the Next.js dev server port
+# Build the Next.js application
+RUN pnpm run build
+
+# Expose the Next.js port
 EXPOSE 3000
 
-# Default command
-CMD ["pnpm", "run", "start"]
+# Start the application
+CMD ["pnpm", "start"]

@@ -24,8 +24,6 @@ services:
     restart: unless-stopped
     ports:
       - "3002:3000"
-    volumes:
-      - ./client:/app
     command: ["pnpm", "run", "start"]
     depends_on:
       - hypergo-server
