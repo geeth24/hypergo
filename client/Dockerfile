@@ -9,7 +9,7 @@ RUN npm install -g pnpm
 # Copy package.json and pnpm-lock.yaml to install dependencies
 COPY package.json pnpm-lock.yaml ./
 
-COPY .env .env
+COPY .env* ./
 
 # Install all dependencies
 RUN pnpm install
