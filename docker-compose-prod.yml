@@ -5,7 +5,7 @@ services:
       dockerfile: Dockerfile
     container_name: hypergo-server
     ports:
-      - "80:8079"
+      - "8079:8079"
     volumes:
       - ./server/shortcuts.json:/app/shortcuts.json
       - ./logs:/app/logs
@@ -20,7 +20,7 @@ services:
       retries: 3
     networks:
       - hypergo_network
-      
+
 networks:
   hypergo_network:
     driver: bridge
