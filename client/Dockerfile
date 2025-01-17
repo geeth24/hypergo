@@ -18,6 +18,3 @@ COPY . .
 
 # Expose the Next.js dev server port
 EXPOSE 3000
-
-# Start Next.js in development mode with hot reloading
-CMD ["pnpm", "run", "dev"]
