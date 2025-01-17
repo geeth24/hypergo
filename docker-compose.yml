@@ -26,12 +26,12 @@ services:
     container_name: hypergo-frontend
     restart: unless-stopped
     ports:
-      - "3000:3000"
+      - "3002:3000"
     volumes:
       - ./client:/app
     command: ["pnpm", "run", "dev"]  # Start in development mode with hot-reload
     environment:
-      - NEXT_PUBLIC_API_URL=http://localhost:8079
+      - NEXT_PUBLIC_API_URL=https://go.geethg.com
       - API_URL=http://server:8079
     depends_on:
       - server
