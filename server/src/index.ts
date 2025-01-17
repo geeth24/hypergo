@@ -78,7 +78,11 @@ apiRouter.get('/shortcuts/:shortcode', async (req: Request, res: Response) => {
   const shortcut = shortcuts[shortcode];
   
   if (shortcut) {
-    res.json({ url: shortcut.url });
+    res.json({
+      url: shortcut.url,
+      createdAt: shortcut.createdAt,
+      clicks: shortcut.clicks
+    });
   } else {
     res.status(404).json({ error: 'Shortcode not found' });
   }
