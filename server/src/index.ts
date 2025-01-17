@@ -88,6 +88,25 @@ apiRouter.get('/shortcuts/:shortcode', async (req: Request, res: Response) => {
   }
 });
 
+//update the shortcut
+apiRouter.put('/shortcuts/:shortcode', async (req: Request, res: Response) => {
+  const { shortcode } = req.params;
+  const shortcut = shortcuts[shortcode];
+  const { url } = req.body as AddRedirectBody;
+  
+  if (shortcut) {
+    shortcuts[shortcode] = {
+      url,
+      createdAt: shortcut.createdAt,
+      clicks: shortcut.clicks
+    };
+    await saveShortcuts();
+    res.json({ message: 'Shortcut updated', shortcut: shortcuts[shortcode] });
+  } else {
+    res.status(404).json({ error: 'Shortcode not found' });
+  }
+});
+
 apiRouter.post('/shortcuts', async (req: Request, res: Response) => {
   const { shortcode, url } = req.body as AddRedirectBody;
   
