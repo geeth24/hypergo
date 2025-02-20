@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>PayloadContent</key>
+    <array>
+        <dict>
+            <key>PayloadDescription</key>
+            <string>Configures HyperGo DNS settings</string>
+            <key>PayloadDisplayName</key>
+            <string>HyperGo DNS</string>
+            <key>PayloadIdentifier</key>
+            <string>com.hypergo.dns</string>
+            <key>PayloadType</key>
+            <string>com.apple.dnsSettings.managed</string>
+            <key>PayloadUUID</key>
+            <string>A8187C0B-F667-4B44-9B5B-D67E91B5A836</string>
+            <key>PayloadVersion</key>
+            <integer>1</integer>
+            <key>DNSSettings</key>
+            <dict>
+                <key>ServerAddresses</key>
+                <array>
+                    <string>192.168.1.71</string>
+                </array>
+                <key>SupplementalMatchDomains</key>
+                <array>
+                    <string>go</string>
+                </array>
+            </dict>
+        </dict>
+    </array>
+    <key>PayloadDescription</key>
+    <string>HyperGo DNS Configuration</string>
+    <key>PayloadDisplayName</key>
+    <string>HyperGo DNS Settings</string>
+    <key>PayloadIdentifier</key>
+    <string>com.hypergo.profile</string>
+    <key>PayloadRemovalDisallowed</key>
+    <false/>
+    <key>PayloadType</key>
+    <string>Configuration</string>
+    <key>PayloadUUID</key>
+    <string>34B6F8B7-9A77-4D08-B159-F8CF69B7D271</string>
+    <key>PayloadVersion</key>
+    <integer>1</integer>
+</dict>
+</plist> 

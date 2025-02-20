@@ -1,12 +1,13 @@
 import HyperGoLogo from '@/components/HyperGoLogo';
 import './globals.css';
 import { ThemeProvider } from '@/components/theme-provider';
-import { Lato } from 'next/font/google';
+import { Space_Grotesk } from 'next/font/google';
 import { Toaster } from '@/components/ui/toaster';
 
-const lato = Lato({
+const spaceGrotesk = Space_Grotesk({
   subsets: ['latin'],
-  weight: ['100', '300', '400', '700', '900'],
+  // Space Grotesk available weights are 300, 400, 500, 600, 700
+  weight: ['300', '400', '500', '600', '700'],
 });
 
 export const metadata = {
@@ -17,7 +18,7 @@ export const metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={lato.className}>
+      <body className={spaceGrotesk.className}>
         <ThemeProvider
           attribute="class"
           defaultTheme="dark"
