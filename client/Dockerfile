@@ -2,8 +2,8 @@ FROM node:18-alpine
 
 WORKDIR /app
 
-# Install pnpm globally
-RUN npm install -g pnpm
+# Install pnpm globally using npm
+RUN npm install -g pnpm@latest
 
 # Copy package files (from the client directory)
 COPY package.json pnpm-lock.yaml ./
