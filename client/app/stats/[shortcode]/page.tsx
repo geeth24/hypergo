@@ -25,7 +25,8 @@ export default function StatsPage() {
   useEffect(() => {
     const fetchShortcut = async () => {
       try {
-        const response = await fetch(`https://go.geethg.com/api/shortcuts/${shortcode}`);
+        const encodedShortcode = encodeURIComponent(shortcode);
+        const response = await fetch(`https://go.geethg.com/api/shortcuts/${encodedShortcode}`);
         if (!response.ok) {
           throw new Error('Failed to fetch shortcut data');
         }
@@ -47,7 +48,8 @@ export default function StatsPage() {
 
   const updateShortcut = async (newUrl: string) => {
     try {
-      const response = await fetch(`https://go.geethg.com/api/shortcuts/${shortcode}`, {
+      const encodedShortcode = encodeURIComponent(shortcode);
+      const response = await fetch(`https://go.geethg.com/api/shortcuts/${encodedShortcode}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

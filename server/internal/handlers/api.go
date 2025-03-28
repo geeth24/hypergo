@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"strings"
 	"time"
+	"net/url"
 
 	"hypergo/internal/models"
 	"hypergo/internal/storage"
@@ -46,11 +47,19 @@ func (a *APIHandler) Handler(w http.ResponseWriter, r *http.Request) {
 		a.createShortcutHandler(w, r)
 	case strings.HasPrefix(path, "shortcuts/") && r.Method == http.MethodGet:
 		// Handle get single shortcut
-		shortcode := strings.TrimPrefix(path, "shortcuts/")
+		shortcode, err := url.PathUnescape(strings.TrimPrefix(path, "shortcuts/"))
+		if err != nil {
+			http.Error(w, "Invalid shortcode", http.StatusBadRequest)
+			return
+		}
 		a.getShortcutHandler(w, r, shortcode)
 	case strings.HasPrefix(path, "shortcuts/") && r.Method == http.MethodPUT:
 		// Handle update shortcut
-		shortcode := strings.TrimPrefix(path, "shortcuts/")
+		shortcode, err := url.PathUnescape(strings.TrimPrefix(path, "shortcuts/"))
+		if err != nil {
+			http.Error(w, "Invalid shortcode", http.StatusBadRequest)
+			return
+		}
 		a.updateShortcutHandler(w, r, shortcode)
 	default:
 		http.NotFound(w, r)
