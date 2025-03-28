@@ -19,7 +19,7 @@ services:
       - PORT=8079
       - DATABASE_URL=postgres://postgres:postgres@db:5432/hypergo
       - REDIS_URL=redis:6379
-      - IMPORT_FROM_JSON=true
+      - IMPORT_FROM_JSON=false
       - SHORTCUTS_FILE=/app/shortcuts.json
     depends_on:
       - db
@@ -52,7 +52,7 @@ services:
       - POSTGRES_DB=hypergo
     volumes:
       - postgres_data:/var/lib/postgresql/data
-      - ./server/scripts:/scripts
+      - ./server/scripts/migration.sql:/docker-entrypoint-initdb.d/init.sql
     ports:
       - "5434:5432"
     networks:

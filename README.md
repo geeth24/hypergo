@@ -5,8 +5,8 @@ A simple URL shortener service with PostgreSQL database and Redis caching.
 ## Features
 
 - Create and manage short URLs
-- PostgreSQL database for data persistence
-- Redis caching for improved performance
+- PostgreSQL database for permanent storage of shortcuts
+- Redis caching for high-performance caching
 - Dockerized for easy deployment
 - Web interface included
 
@@ -22,7 +22,6 @@ A simple URL shortener service with PostgreSQL database and Redis caching.
 ### Prerequisites
 
 - Docker and Docker Compose
-- Make (optional)
 
 ### Quick Start
 
@@ -32,38 +31,31 @@ A simple URL shortener service with PostgreSQL database and Redis caching.
    cd hypergo
    ```
 
-2. Run the setup script:
-   ```
-   ./server/scripts/setup.sh
-   ```
-   
-   This will:
-   - Start PostgreSQL and Redis
-   - Initialize the database schema
-   - Optionally import shortcuts from JSON (if you choose)
-   - Start the server and frontend
-
-3. Access the application at `http://localhost`
-
-### Manual Setup
-
-1. Start the services:
+2. Start all services with Docker Compose:
    ```
    docker compose up -d
    ```
 
-2. Run database migrations:
-   ```
-   docker compose exec db psql -U postgres -d hypergo -f /scripts/migration.sql
-   ```
+   This will:
+   - Start PostgreSQL database with automatic schema initialization
+   - Start Redis cache
+   - Build and start the Go server
+   - Build and start the frontend
+   
+3. Access the application at `http://localhost`
+
+To stop services:
+```
+docker compose down
+```
 
 ## Data Migration from JSON
 
 If you're upgrading from the JSON-based version, you can migrate your data:
 
-1. Set `IMPORT_FROM_JSON=true` in your environment
-2. Make sure the `shortcuts.json` file is accessible to the server
-3. Start the server, which will automatically import the shortcuts
+1. Edit `docker-compose.yml` and set `IMPORT_FROM_JSON=true` in the hypergo-server environment
+2. Make sure the `shortcuts.json` file is available in the server directory
+3. Restart the services with `docker compose up -d`
 
 After importing, you should set `IMPORT_FROM_JSON=false` to prevent reimporting on every restart.
 

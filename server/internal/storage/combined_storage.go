@@ -126,4 +126,9 @@ func (s *CombinedStorage) Close() {
 	if s.cache != nil {
 		s.cache.Close()
 	}
+}
+
+// IsRedisConnected returns true if Redis is connected and available
+func (s *CombinedStorage) IsRedisConnected() bool {
+	return s.cache != nil
 } 

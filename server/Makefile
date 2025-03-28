@@ -1,4 +1,4 @@
-.PHONY: build run clean docker-build docker-run db-init db-migrate
+.PHONY: build run clean docker-build docker-run
 
 build:
 	go build -o bin/hypergo ./cmd/hypergo
@@ -18,14 +18,15 @@ docker-build:
 docker-run:
 	docker run -p 8079:8079 hypergo
 
-# Database related commands
-db-init:
-	docker-compose up -d db
-	sleep 3
-	docker-compose exec db psql -U postgres -c "CREATE DATABASE hypergo;"
+# Run everything with Docker Compose
+docker-compose-up:
+	docker compose up -d
 
-db-migrate:
-	docker-compose exec db psql -U postgres -d hypergo -f /scripts/migration.sql
+docker-compose-down:
+	docker compose down
 
-# Combined commands for development
-setup: docker-build db-init db-migrate docker-run 
+# Show logs
+logs:
+	docker compose logs -f
+
+.DEFAULT_GOAL := dev 

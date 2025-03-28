@@ -17,7 +17,7 @@ func main() {
 	cfg := config.New()
 	
 	// Initialize combined storage (PostgreSQL + Redis)
-	log.Printf("Connecting to database: %s", cfg.DatabaseURL)
+	log.Printf("Connecting to database at %s", cfg.DatabaseURL)
 	store, err := storage.NewCombined(
 		cfg.DatabaseURL,
 		cfg.RedisURL,
@@ -28,6 +28,13 @@ func main() {
 		log.Fatalf("Failed to initialize storage: %v", err)
 	}
 	defer store.Close()
+	
+	log.Printf("✓ Connected to PostgreSQL database")
+	if store.IsRedisConnected() {
+		log.Printf("✓ Connected to Redis cache")
+	} else {
+		log.Printf("⚠ Redis cache not available, running without cache")
+	}
 	
 	// Import data from JSON file if enabled (migration only)
 	if cfg.ImportFromJSON {
