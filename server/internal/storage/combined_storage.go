@@ -4,16 +4,6 @@ import (
 	"hypergo/internal/models"
 )
 
-// Storage interface defines required methods for storage implementations
-type StorageInterface interface {
-	GetAll() models.Shortcuts
-	Get(shortcode string) (models.Shortcut, bool)
-	Create(shortcode string, shortcut models.Shortcut) error
-	Update(shortcode string, shortcut models.Shortcut) error
-	IncrementClicks(shortcode string) error
-	Close()
-}
-
 // CombinedStorage combines PostgreSQL for persistence and Redis for caching
 type CombinedStorage struct {
 	db    *PostgresStorage
