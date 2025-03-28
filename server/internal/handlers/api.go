@@ -53,7 +53,7 @@ func (a *APIHandler) Handler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		a.getShortcutHandler(w, r, shortcode)
-	case strings.HasPrefix(path, "shortcuts/") && r.Method == http.MethodPUT:
+	case strings.HasPrefix(path, "shortcuts/") && r.Method == "PUT":
 		// Handle update shortcut
 		shortcode, err := url.PathUnescape(strings.TrimPrefix(path, "shortcuts/"))
 		if err != nil {
