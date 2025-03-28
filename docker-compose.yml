@@ -15,6 +15,15 @@ services:
       interval: 30s
       timeout: 10s
       retries: 3
+    environment:
+      - PORT=8079
+      - DATABASE_URL=postgres://postgres:postgres@db:5432/hypergo
+      - REDIS_URL=redis:6379
+      - IMPORT_FROM_JSON=true
+      - SHORTCUTS_FILE=/app/shortcuts.json
+    depends_on:
+      - db
+      - redis
     networks:
       - hypergo_network
 
@@ -33,6 +42,38 @@ services:
     depends_on:
       - hypergo-server
 
+  db:
+    image: postgres:16-alpine
+    container_name: hypergo-db
+    restart: unless-stopped
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=hypergo
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./server/scripts:/scripts
+    ports:
+      - "5432:5432"
+    networks:
+      - hypergo_network
+
+  redis:
+    image: redis:7-alpine
+    container_name: hypergo-redis
+    restart: unless-stopped
+    command: redis-server --save 60 1 --loglevel warning
+    volumes:
+      - redis_data:/data
+    ports:
+      - "6379:6379"
+    networks:
+      - hypergo_network
+
 networks:
   hypergo_network:
     driver: bridge
+
+volumes:
+  postgres_data:
+  redis_data:

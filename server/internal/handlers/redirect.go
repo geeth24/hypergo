@@ -8,11 +8,11 @@ import (
 
 // RedirectHandler handles redirects for short URLs
 type RedirectHandler struct {
-	storage *storage.Storage
+	storage storage.StorageInterface
 }
 
 // NewRedirectHandler creates a new redirect handler
-func NewRedirectHandler(storage *storage.Storage) *RedirectHandler {
+func NewRedirectHandler(storage storage.StorageInterface) *RedirectHandler {
 	return &RedirectHandler{
 		storage: storage,
 	}

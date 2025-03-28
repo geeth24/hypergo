@@ -17,19 +17,29 @@ FROM alpine:latest
 
 WORKDIR /app
 
+# Install necessary tools for healthcheck
+RUN apk add --no-cache wget ca-certificates
+
 # Copy the binary from the builder stage
 COPY --from=builder /app/app .
 
 # Copy the shortcuts.json file
 COPY shortcuts.json .
 
+# Copy the environment file if exists
+COPY .env* ./
+
 # Create a directory for public files
-RUN mkdir -p public
+COPY --from=builder /app/public ./public
 
 # Create a directory for logs
 RUN mkdir -p logs
 
 EXPOSE 8079
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
+  CMD wget --no-verbose --tries=1 --spider http://localhost:8079/api/health || exit 1
 
 # Run the application
 CMD ["./app"]

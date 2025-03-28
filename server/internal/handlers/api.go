@@ -12,11 +12,11 @@ import (
 
 // APIHandler handles API requests
 type APIHandler struct {
-	storage *storage.Storage
+	storage storage.StorageInterface
 }
 
 // NewAPIHandler creates a new API handler
-func NewAPIHandler(storage *storage.Storage) *APIHandler {
+func NewAPIHandler(storage storage.StorageInterface) *APIHandler {
 	return &APIHandler{
 		storage: storage,
 	}

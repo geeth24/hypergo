@@ -1,58 +1,89 @@
-# HyperGo
+# HyperGo URL Shortener
 
-A lightweight, self-hosted URL shortening service designed for internal team use. Create memorable shortcuts to frequently accessed resources within your organization.
+A simple URL shortener service with PostgreSQL database and Redis caching.
 
-## Key Features:
-- Create custom short links (e.g., go/firebase) for any URL
-- Track usage with built-in click analytics
-- RESTful API for easy integration
-- Real-time shortcut management (create, update, view stats)
-- Persistent storage of shortcuts and analytics
-- Automatic port management for reliable deployment
-- CORS-enabled for cross-origin requests
+## Features
 
-## Technical Highlights:
-- Built with Go for performance, reliability and type safety
-- JSON-based storage for simple deployment and maintenance
-- Health monitoring endpoint
-- Automatic fallback port selection if default port is in use
-- Static file serving for web interface
+- Create and manage short URLs
+- PostgreSQL database for data persistence
+- Redis caching for improved performance
+- Dockerized for easy deployment
+- Web interface included
 
-## Project Structure:
+## Architecture
+
+- **Server**: Go application serving the API and frontend
+- **Database**: PostgreSQL for persistent storage
+- **Cache**: Redis for improved performance
+- **Frontend**: React application for managing shortcuts
+
+## Installation and Setup
+
+### Prerequisites
+
+- Docker and Docker Compose
+- Make (optional)
+
+### Quick Start
+
+1. Clone the repository:
+   ```
+   git clone https://github.com/yourusername/hypergo.git
+   cd hypergo
+   ```
+
+2. Run the setup script:
+   ```
+   ./server/scripts/setup.sh
+   ```
+
+3. Access the application at `http://localhost`
+
+### Manual Setup
+
+1. Start the services:
+   ```
+   docker-compose up -d
+   ```
+
+2. Run database migrations:
+   ```
+   docker-compose exec db psql -U postgres -d hypergo -f /scripts/migration.sql
+   ```
+
+## Development
+
+### Server
+
+To run the server in development mode:
+
 ```
-server/
-├── cmd/hypergo/       # Main application entry point
-├── config/            # Application configuration
-├── internal/          # Internal packages
-│   ├── handlers/      # HTTP request handlers
-│   ├── models/        # Data models
-│   └── storage/       # Data persistence
-├── public/            # Static web files
-├── shortcuts.json     # URL shortcut database
-├── Dockerfile         # Container definition
-└── Makefile           # Build automation
+cd server
+go run ./cmd/hypergo/main.go
 ```
 
-## Development:
-```bash
-# Run the server in development mode
-make dev
+### Client
 
-# Build the binary
-make build
+To run the client in development mode:
 
-# Run the built binary
-make run
-
-# Build Docker image
-make docker-build
-
-# Run Docker container
-make docker-run
+```
+cd client
+pnpm install
+pnpm dev
 ```
 
-## Use Cases:
-- Simplify access to internal documentation
-- Create memorable links for frequently used tools and resources
-- Track which resources are most accessed by your team
-- Streamline sharing of long URLs in your organization
+## Environment Variables
+
+### Server
+
+- `PORT`: Port for the server to listen on (default: 8079)
+- `DATABASE_URL`: PostgreSQL connection URL (default: postgres://postgres:postgres@localhost:5432/hypergo)
+- `REDIS_URL`: Redis connection URL (default: localhost:6379)
+- `REDIS_PASSWORD`: Redis password (default: empty)
+- `REDIS_DB`: Redis database number (default: 0)
+- `IMPORT_FROM_JSON`: Whether to import shortcuts from JSON (default: true)
+- `SHORTCUTS_FILE`: Path to JSON file with shortcuts (default: shortcuts.json)
+
+## License
+
+MIT
