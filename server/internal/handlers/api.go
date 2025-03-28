@@ -44,6 +44,14 @@ func (a *APIHandler) Handler(w http.ResponseWriter, r *http.Request) {
 		a.getShortcutsHandler(w, r)
 	case path == "shortcuts" && r.Method == http.MethodPost:
 		a.createShortcutHandler(w, r)
+	case strings.HasPrefix(path, "shortcuts/") && r.Method == http.MethodGet:
+		// Handle get single shortcut
+		shortcode := strings.TrimPrefix(path, "shortcuts/")
+		a.getShortcutHandler(w, r, shortcode)
+	case strings.HasPrefix(path, "shortcuts/") && r.Method == http.MethodPUT:
+		// Handle update shortcut
+		shortcode := strings.TrimPrefix(path, "shortcuts/")
+		a.updateShortcutHandler(w, r, shortcode)
 	default:
 		http.NotFound(w, r)
 	}
@@ -56,6 +64,50 @@ func (a *APIHandler) healthHandler(w http.ResponseWriter, r *http.Request) {
 func (a *APIHandler) getShortcutsHandler(w http.ResponseWriter, r *http.Request) {
 	shortcuts := a.storage.GetAll()
 	json.NewEncoder(w).Encode(shortcuts)
+}
+
+func (a *APIHandler) getShortcutHandler(w http.ResponseWriter, r *http.Request, shortcode string) {
+	shortcut, exists := a.storage.Get(shortcode)
+	if !exists {
+		http.NotFound(w, r)
+		return
+	}
+	
+	json.NewEncoder(w).Encode(shortcut)
+}
+
+func (a *APIHandler) updateShortcutHandler(w http.ResponseWriter, r *http.Request, shortcode string) {
+	var body struct {
+		URL string `json:"url"`
+	}
+	
+	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
+		http.Error(w, "Invalid request body", http.StatusBadRequest)
+		return
+	}
+	
+	if body.URL == "" {
+		http.Error(w, "Missing url", http.StatusBadRequest)
+		return
+	}
+	
+	// Get the existing shortcut
+	existing, exists := a.storage.Get(shortcode)
+	if !exists {
+		http.NotFound(w, r)
+		return
+	}
+	
+	// Update only the URL, keep other properties
+	existing.URL = body.URL
+	
+	if err := a.storage.Update(shortcode, existing); err != nil {
+		http.Error(w, "Failed to update shortcut", http.StatusInternalServerError)
+		return
+	}
+	
+	// Return the updated shortcut
+	json.NewEncoder(w).Encode(existing)
 }
 
 func (a *APIHandler) createShortcutHandler(w http.ResponseWriter, r *http.Request) {
