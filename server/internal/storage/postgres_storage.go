@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"log"
 	"os"
 	"time"
 
@@ -68,7 +69,35 @@ func (s *PostgresStorage) ImportFromJSON(filename string) error {
 		return fmt.Errorf("unable to parse shortcuts file: %v", err)
 	}
 
+	// If there are no shortcuts to import, exit early
+	if len(shortcuts) == 0 {
+		return nil
+	}
+	
+	// Check if the database already has shortcuts
 	ctx := context.Background()
+	var count int
+	err = s.db.QueryRow(ctx, "SELECT COUNT(*) FROM shortcuts").Scan(&count)
+	if err != nil {
+		return fmt.Errorf("unable to check existing shortcuts: %v", err)
+	}
+	
+	// If there are already shortcuts in the database, ask for confirmation before overwriting
+	if count > 0 {
+		log.Printf("Warning: Database already contains %d shortcuts", count)
+		log.Printf("Imported shortcuts will be merged with existing ones")
+		log.Printf("Shortcuts with the same shortcode will be updated")
+	}
+	
+	// Start a transaction for the import
+	tx, err := s.db.Begin(ctx)
+	if err != nil {
+		return fmt.Errorf("unable to start transaction: %v", err)
+	}
+	defer tx.Rollback(ctx) // Will be a no-op if transaction is committed
+	
+	imported := 0
+	skipped := 0
 	
 	for shortcode, shortcut := range shortcuts {
 		// Parse the timestamp
@@ -78,18 +107,44 @@ func (s *PostgresStorage) ImportFromJSON(filename string) error {
 			createdAt = time.Now()
 		}
 		
-		_, err = s.db.Exec(ctx, `
-			INSERT INTO shortcuts (shortcode, url, created_at, clicks)
-			VALUES ($1, $2, $3, $4)
-			ON CONFLICT (shortcode) DO UPDATE
-			SET url = $2, clicks = $4
-		`, shortcode, shortcut.URL, createdAt, shortcut.Clicks)
+		// First check if the shortcode already exists
+		var existingURL string
+		err = tx.QueryRow(ctx, `
+			SELECT url FROM shortcuts WHERE shortcode = $1
+		`, shortcode).Scan(&existingURL)
 		
-		if err != nil {
-			return fmt.Errorf("unable to import shortcut %s: %v", shortcode, err)
+		if err == nil {
+			// Shortcode exists, update it
+			_, err = tx.Exec(ctx, `
+				UPDATE shortcuts 
+				SET url = $2, created_at = $3, clicks = $4
+				WHERE shortcode = $1
+			`, shortcode, shortcut.URL, createdAt, shortcut.Clicks)
+			
+			if err != nil {
+				return fmt.Errorf("unable to update shortcut %s: %v", shortcode, err)
+			}
+			skipped++
+		} else {
+			// Shortcode doesn't exist, insert it
+			_, err = tx.Exec(ctx, `
+				INSERT INTO shortcuts (shortcode, url, created_at, clicks)
+				VALUES ($1, $2, $3, $4)
+			`, shortcode, shortcut.URL, createdAt, shortcut.Clicks)
+			
+			if err != nil {
+				return fmt.Errorf("unable to import shortcut %s: %v", shortcode, err)
+			}
+			imported++
 		}
 	}
 
+	// Commit the transaction
+	if err := tx.Commit(ctx); err != nil {
+		return fmt.Errorf("unable to commit transaction: %v", err)
+	}
+	
+	log.Printf("Import completed: %d shortcuts imported, %d updated", imported, skipped)
 	return nil
 }
 

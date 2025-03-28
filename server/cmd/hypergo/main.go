@@ -17,6 +17,7 @@ func main() {
 	cfg := config.New()
 	
 	// Initialize combined storage (PostgreSQL + Redis)
+	log.Printf("Connecting to database: %s", cfg.DatabaseURL)
 	store, err := storage.NewCombined(
 		cfg.DatabaseURL,
 		cfg.RedisURL,
@@ -28,11 +29,14 @@ func main() {
 	}
 	defer store.Close()
 	
-	// Import data from JSON file if enabled
+	// Import data from JSON file if enabled (migration only)
 	if cfg.ImportFromJSON {
 		log.Printf("Importing shortcuts from %s", cfg.ShortcutsFile)
 		if err := store.ImportFromJSON(cfg.ShortcutsFile); err != nil {
 			log.Printf("Failed to import shortcuts: %v", err)
+		} else {
+			log.Printf("Successfully imported shortcuts from JSON")
+			log.Printf("You can now set IMPORT_FROM_JSON=false to disable future imports")
 		}
 	}
 	

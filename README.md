@@ -13,8 +13,8 @@ A simple URL shortener service with PostgreSQL database and Redis caching.
 ## Architecture
 
 - **Server**: Go application serving the API and frontend
-- **Database**: PostgreSQL for persistent storage
-- **Cache**: Redis for improved performance
+- **Database**: PostgreSQL for permanent storage of shortcuts
+- **Cache**: Redis for high-performance caching
 - **Frontend**: React application for managing shortcuts
 
 ## Installation and Setup
@@ -36,6 +36,12 @@ A simple URL shortener service with PostgreSQL database and Redis caching.
    ```
    ./server/scripts/setup.sh
    ```
+   
+   This will:
+   - Start PostgreSQL and Redis
+   - Initialize the database schema
+   - Optionally import shortcuts from JSON (if you choose)
+   - Start the server and frontend
 
 3. Access the application at `http://localhost`
 
@@ -43,13 +49,23 @@ A simple URL shortener service with PostgreSQL database and Redis caching.
 
 1. Start the services:
    ```
-   docker-compose up -d
+   docker compose up -d
    ```
 
 2. Run database migrations:
    ```
-   docker-compose exec db psql -U postgres -d hypergo -f /scripts/migration.sql
+   docker compose exec db psql -U postgres -d hypergo -f /scripts/migration.sql
    ```
+
+## Data Migration from JSON
+
+If you're upgrading from the JSON-based version, you can migrate your data:
+
+1. Set `IMPORT_FROM_JSON=true` in your environment
+2. Make sure the `shortcuts.json` file is accessible to the server
+3. Start the server, which will automatically import the shortcuts
+
+After importing, you should set `IMPORT_FROM_JSON=false` to prevent reimporting on every restart.
 
 ## Development
 
@@ -81,7 +97,7 @@ pnpm dev
 - `REDIS_URL`: Redis connection URL (default: localhost:6379)
 - `REDIS_PASSWORD`: Redis password (default: empty)
 - `REDIS_DB`: Redis database number (default: 0)
-- `IMPORT_FROM_JSON`: Whether to import shortcuts from JSON (default: true)
+- `IMPORT_FROM_JSON`: Whether to import shortcuts from JSON (default: false)
 - `SHORTCUTS_FILE`: Path to JSON file with shortcuts (default: shortcuts.json)
 
 ## License
