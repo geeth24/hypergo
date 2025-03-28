@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HyperGo - URL Shortener</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1 {
+            color: #2c3e50;
+        }
+        .container {
+            background-color: #f9f9f9;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+        .shortcuts {
+            margin-top: 30px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            text-align: left;
+            padding: 12px;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+    <h1>HyperGo</h1>
+    <div class="container">
+        <h2>Create a New Shortcut</h2>
+        <div class="form-group">
+            <label for="shortcode">Shortcode</label>
+            <input type="text" id="shortcode" placeholder="e.g., firebase">
+        </div>
+        <div class="form-group">
+            <label for="url">URL</label>
+            <input type="text" id="url" placeholder="e.g., https://console.firebase.google.com">
+        </div>
+        <button id="create">Create Shortcut</button>
+    </div>
+
+    <div class="shortcuts">
+        <h2>Your Shortcuts</h2>
+        <table id="shortcuts-table">
+            <thead>
+                <tr>
+                    <th>Shortcode</th>
+                    <th>URL</th>
+                    <th>Created</th>
+                    <th>Clicks</th>
+                </tr>
+            </thead>
+            <tbody id="shortcuts-body">
+                <!-- Shortcuts will be loaded here -->
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Load shortcuts
+            loadShortcuts();
+
+            // Create shortcut
+            document.getElementById('create').addEventListener('click', createShortcut);
+        });
+
+        function loadShortcuts() {
+            fetch('/api/shortcuts')
+                .then(response => response.json())
+                .then(shortcuts => {
+                    const tbody = document.getElementById('shortcuts-body');
+                    tbody.innerHTML = '';
+                    
+                    Object.entries(shortcuts).forEach(([shortcode, shortcut]) => {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td><a href="/${shortcode}" target="_blank">${shortcode}</a></td>
+                            <td><a href="${shortcut.url}" target="_blank">${shortcut.url}</a></td>
+                            <td>${new Date(shortcut.createdAt).toLocaleDateString()}</td>
+                            <td>${shortcut.clicks}</td>
+                        `;
+                        tbody.appendChild(row);
+                    });
+                })
+                .catch(error => console.error('Error loading shortcuts:', error));
+        }
+
+        function createShortcut() {
+            const shortcode = document.getElementById('shortcode').value.trim();
+            const url = document.getElementById('url').value.trim();
+            
+            if (!shortcode || !url) {
+                alert('Please enter both shortcode and URL');
+                return;
+            }
+            
+            fetch('/api/shortcuts', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ shortcode, url }),
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Failed to create shortcut');
+                }
+                return response.json();
+            })
+            .then(() => {
+                // Clear form
+                document.getElementById('shortcode').value = '';
+                document.getElementById('url').value = '';
+                
+                // Reload shortcuts
+                loadShortcuts();
+            })
+            .catch(error => console.error('Error creating shortcut:', error));
+        }
+    </script>
+</body>
+</html> 

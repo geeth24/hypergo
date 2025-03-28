@@ -11,7 +11,6 @@ services:
       - ./logs:/app/logs
     restart: unless-stopped
     environment:
-      - NODE_ENV=production
       - PORT=8079
     healthcheck:
       test: ["CMD", "wget", "--spider", "https://go.geethg.com/admin"]
