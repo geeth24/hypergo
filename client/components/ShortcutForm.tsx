@@ -59,7 +59,7 @@ export default function ShortcutForm() {
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsSubmitting(true);
     try {
-      const response = await fetch('https://go.geethg.com/api/shortcuts', {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/shortcuts`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -68,7 +68,7 @@ export default function ShortcutForm() {
       });
       if (response.ok) {
         const data = await response.json();
-        setCreatedShortcut(`https://go.geethg.com/${data.shortcode}`);
+        setCreatedShortcut(`${process.env.NEXT_PUBLIC_API_URL}/${data.shortcode}`);
         toast({
           title: 'Shortcut created',
           description: 'Your new shortcut has been created successfully.',

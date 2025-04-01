@@ -19,7 +19,7 @@ export default function ShortcutList() {
   const [searchTerm, setSearchTerm] = useState('');
 
   useEffect(() => {
-    fetch('https://go.geethg.com/api/shortcuts')
+    fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/shortcuts`)
       .then((response) => response.json())
       .then((data) => setShortcuts(data));
   }, []);

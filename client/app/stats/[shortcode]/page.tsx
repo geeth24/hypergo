@@ -26,7 +26,9 @@ export default function StatsPage() {
     const fetchShortcut = async () => {
       try {
         const encodedShortcode = encodeURIComponent(shortcode);
-        const response = await fetch(`https://go.geethg.com/api/shortcuts/${encodedShortcode}`);
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}/api/shortcuts/${encodedShortcode}`,
+        );
         if (!response.ok) {
           throw new Error('Failed to fetch shortcut data');
         }
@@ -49,13 +51,16 @@ export default function StatsPage() {
   const updateShortcut = async (newUrl: string) => {
     try {
       const encodedShortcode = encodeURIComponent(shortcode);
-      const response = await fetch(`https://go.geethg.com/api/shortcuts/${encodedShortcode}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/shortcuts/${encodedShortcode}`,
+        {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ url: newUrl }),
         },
-        body: JSON.stringify({ url: newUrl }),
-      });
+      );
       if (!response.ok) {
         throw new Error('Failed to update shortcut data');
       }
@@ -134,12 +139,12 @@ export default function StatsPage() {
               <dt className="text-sm font-medium text-gray-500">Full Short URL</dt>
               <dd className="mt-1 text-lg font-semibold">
                 <Link
-                  href={`https://go.geethg.com/${shortcode}`}
+                  href={`${process.env.NEXT_PUBLIC_API_URL}/${shortcode}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-primary hover:underline"
                 >
-                  https://go.geethg.com/{shortcode}
+                  {process.env.NEXT_PUBLIC_API_URL}/{shortcode}
                 </Link>
               </dd>
             </div>
