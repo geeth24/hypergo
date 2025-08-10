@@ -67,7 +67,7 @@ export default function ShortcutForm() {
         body: JSON.stringify(values),
       });
       if (response.ok) {
-        const data = await response.json();
+        await response.json();
         setCreatedShortcut(`${process.env.NEXT_PUBLIC_API_URL}/${values.shortcode}`);
         toast({
           title: 'Shortcut created',
