@@ -6,6 +6,7 @@ import (
 	"strings"
 	"time"
 	"net/url"
+    "log"
 
 	"hypergo/internal/models"
 	"hypergo/internal/storage"
@@ -45,6 +46,9 @@ func (a *APIHandler) Handler(w http.ResponseWriter, r *http.Request) {
 		a.getShortcutsHandler(w, r)
 	case path == "shortcuts" && r.Method == http.MethodPost:
 		a.createShortcutHandler(w, r)
+	case path == "shortcuts/bulk" && r.Method == http.MethodPost:
+		// Fetch details for multiple shortcodes in one request
+		a.getShortcutsBulkHandler(w, r)
 	case strings.HasPrefix(path, "shortcuts/") && r.Method == http.MethodGet:
 		// Handle get single shortcut
 		shortcode, err := url.PathUnescape(strings.TrimPrefix(path, "shortcuts/"))
@@ -75,6 +79,33 @@ func (a *APIHandler) getShortcutsHandler(w http.ResponseWriter, r *http.Request)
 	json.NewEncoder(w).Encode(shortcuts)
 }
 
+// getShortcutsBulkHandler accepts a JSON body { "shortcodes": ["a", "b"] }
+// and returns a map of shortcode -> Shortcut for those that exist
+func (a *APIHandler) getShortcutsBulkHandler(w http.ResponseWriter, r *http.Request) {
+    var body struct {
+        Shortcodes []string `json:"shortcodes"`
+    }
+    if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
+        http.Error(w, "Invalid request body", http.StatusBadRequest)
+        return
+    }
+    if len(body.Shortcodes) == 0 {
+        json.NewEncoder(w).Encode(map[string]models.Shortcut{})
+        return
+    }
+
+    result := make(map[string]models.Shortcut)
+    for _, code := range body.Shortcodes {
+        if code == "" {
+            continue
+        }
+        if sc, ok := a.storage.Get(code); ok {
+            result[code] = sc
+        }
+    }
+    json.NewEncoder(w).Encode(result)
+}
+
 func (a *APIHandler) getShortcutHandler(w http.ResponseWriter, r *http.Request, shortcode string) {
 	shortcut, exists := a.storage.Get(shortcode)
 	if !exists {
@@ -90,8 +121,9 @@ func (a *APIHandler) updateShortcutHandler(w http.ResponseWriter, r *http.Reques
 		URL string `json:"url"`
 	}
 	
-	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
-		http.Error(w, "Invalid request body", http.StatusBadRequest)
+    if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
+        log.Printf("createShortcutHandler: invalid body: %v", err)
+        http.Error(w, "Invalid request body", http.StatusBadRequest)
 		return
 	}
 	
@@ -101,7 +133,7 @@ func (a *APIHandler) updateShortcutHandler(w http.ResponseWriter, r *http.Reques
 	}
 	
 	// Get the existing shortcut
-	existing, exists := a.storage.Get(shortcode)
+    existing, exists := a.storage.Get(shortcode)
 	if !exists {
 		http.NotFound(w, r)
 		return
@@ -110,8 +142,9 @@ func (a *APIHandler) updateShortcutHandler(w http.ResponseWriter, r *http.Reques
 	// Update only the URL, keep other properties
 	existing.URL = body.URL
 	
-	if err := a.storage.Update(shortcode, existing); err != nil {
-		http.Error(w, "Failed to update shortcut", http.StatusInternalServerError)
+    if err := a.storage.Update(shortcode, existing); err != nil {
+        log.Printf("updateShortcutHandler: storage.Update failed: %v", err)
+        http.Error(w, "Failed to update shortcut", http.StatusInternalServerError)
 		return
 	}
 	
@@ -125,8 +158,9 @@ func (a *APIHandler) createShortcutHandler(w http.ResponseWriter, r *http.Reques
 		URL       string `json:"url"`
 	}
 	
-	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
-		http.Error(w, "Invalid request body", http.StatusBadRequest)
+    if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
+        log.Printf("createShortcutHandler: invalid body: %v", err)
+        http.Error(w, "Invalid request body", http.StatusBadRequest)
 		return
 	}
 	
@@ -141,8 +175,9 @@ func (a *APIHandler) createShortcutHandler(w http.ResponseWriter, r *http.Reques
 		Clicks:    0,
 	}
 	
-	if err := a.storage.Create(body.Shortcode, shortcut); err != nil {
-		http.Error(w, "Failed to save shortcut", http.StatusInternalServerError)
+    if err := a.storage.Create(body.Shortcode, shortcut); err != nil {
+        log.Printf("createShortcutHandler: storage.Create failed: %v", err)
+        http.Error(w, "Failed to save shortcut", http.StatusInternalServerError)
 		return
 	}
 	
