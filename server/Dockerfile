@@ -23,9 +23,6 @@ RUN apk add --no-cache wget ca-certificates
 # Copy the binary from the builder stage
 COPY --from=builder /app/app .
 
-# Copy the shortcuts.json file (for potential migration)
-COPY shortcuts.json .
-
 # Copy the environment file if exists
 COPY .env* ./
 
