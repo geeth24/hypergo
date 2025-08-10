@@ -2,7 +2,7 @@ import HyperGoLogo from '@/components/HyperGoLogo';
 import './globals.css';
 import { ThemeProvider } from '@/components/theme-provider';
 import { Inter, JetBrains_Mono, Lora } from 'next/font/google';
-import { Toaster } from '@/components/ui/toaster';
+import { Toaster } from '@/components/ui/sonner';
 import Link from 'next/link';
 import { ModeToggle } from '@/components/ui/mode-toggle';
 import {
@@ -70,7 +70,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               <p>Self‑hosted go links for your network</p>
               <p className="tracking-wide">© {new Date().getFullYear()} HyperGo</p>
             </footer>
-            <Toaster />
+            <Toaster richColors closeButton />
           </div>
         </ThemeProvider>
       </body>

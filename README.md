@@ -1,96 +1,97 @@
 # HyperGo URL Shortener
 
-A simple URL shortener service with PostgreSQL database and Redis caching.
+A self‑hosted URL shortener with a modern UI, PostgreSQL persistence, and optional Redis caching.
 
-## Features
+## Highlights
 
-- Create and manage short URLs
-- PostgreSQL database for permanent storage of shortcuts
-- Redis caching for high-performance caching
-- Dockerized for easy deployment
-- Web interface included
+- Create and manage short URLs with go-style shortcuts
+- PostgreSQL for durable storage, optional Redis cache
+- Redesigned frontend using shadcn/ui components
+- Toast notifications via shadcn Sonner
+- Docker Compose for easy deployment
 
 ## Architecture
 
-- **Server**: Go application serving the API and frontend
-- **Database**: PostgreSQL for permanent storage of shortcuts
-- **Cache**: Redis for high-performance caching
-- **Frontend**: React application for managing shortcuts
+- Server: Go API with redirect handler and JSON endpoints
+- Database: PostgreSQL (schema auto-initialized)
+- Cache: Redis (optional, used when available)
+- Frontend: Next.js + shadcn/ui
 
-## Installation and Setup
+## Quick Start (Docker)
 
-### Prerequisites
+1) Clone and start:
+```
+git clone https://github.com/geeth24/hypergo.git
+cd hypergo
+docker compose up -d
+```
 
-- Docker and Docker Compose
+2) Access:
+- Frontend: `http://localhost:3002`
+- API/Redirect server: `http://localhost`
 
-### Quick Start
+Note: The client uses `NEXT_PUBLIC_API_URL` (set in `docker-compose.yml`) to reach the API. Update it to match your host (e.g., `http://localhost` or your LAN IP).
 
-1. Clone the repository:
-   ```
-   git clone https://github.com/yourusername/hypergo.git
-   cd hypergo
-   ```
-
-2. Start all services with Docker Compose:
-   ```
-   docker compose up -d
-   ```
-
-   This will:
-   - Start PostgreSQL database with automatic schema initialization
-   - Start Redis cache
-   - Build and start the Go server
-   - Build and start the frontend
-   
-3. Access the application at `http://localhost`
-
-To stop services:
+To stop:
 ```
 docker compose down
 ```
 
-## Data Migration from JSON
+## Local Development
 
-If you're upgrading from the JSON-based version, you can migrate your data:
-
-1. Edit `docker-compose.yml` and set `IMPORT_FROM_JSON=true` in the hypergo-server environment
-2. Make sure the `shortcuts.json` file is available in the server directory
-3. Restart the services with `docker compose up -d`
-
-After importing, you should set `IMPORT_FROM_JSON=false` to prevent reimporting on every restart.
-
-## Development
-
-### Server
-
-To run the server in development mode:
-
+Server:
 ```
 cd server
 go run ./cmd/hypergo/main.go
 ```
 
-### Client
-
-To run the client in development mode:
-
+Client:
 ```
 cd client
 pnpm install
 pnpm dev
 ```
 
+Ensure the client has `NEXT_PUBLIC_API_URL` pointing at your server (e.g., add to `.env.local`):
+```
+NEXT_PUBLIC_API_URL=http://localhost:8079
+```
+
+## API
+
+- `GET /api/health` – health check
+- `GET /api/shortcuts` – list all shortcuts
+- `POST /api/shortcuts` – create a shortcut
+  - body: `{ "shortcode": string, "url": string }`
+- `GET /api/shortcuts/:shortcode` – get details for a shortcut
+- `PUT /api/shortcuts/:shortcode` – update destination URL
+  - body: `{ "url": string }`
+- `POST /api/shortcuts/bulk` – get details for multiple shortcodes
+  - body: `{ "shortcodes": string[] }`
+- Redirects: `GET /:shortcode` – redirects and increments click count
+
+## UI
+
+- Built with shadcn/ui components (installed via `pnpm dlx shadcn add ...`)
+- Notifications use shadcn Sonner; the `Toaster` is mounted in `app/layout.tsx`
+
 ## Environment Variables
 
-### Server
+Server:
+- `PORT` (default: `8079`)
+- `DATABASE_URL` (default: `postgres://postgres:postgres@localhost:5432/hypergo`)
+- `REDIS_URL` (default: `localhost:6379`)
+- `REDIS_PASSWORD` (default: empty)
+- `REDIS_DB` (default: `0`)
 
-- `PORT`: Port for the server to listen on (default: 8079)
-- `DATABASE_URL`: PostgreSQL connection URL (default: postgres://postgres:postgres@localhost:5432/hypergo)
-- `REDIS_URL`: Redis connection URL (default: localhost:6379)
-- `REDIS_PASSWORD`: Redis password (default: empty)
-- `REDIS_DB`: Redis database number (default: 0)
-- `IMPORT_FROM_JSON`: Whether to import shortcuts from JSON (default: false)
-- `SHORTCUTS_FILE`: Path to JSON file with shortcuts (default: shortcuts.json)
+Client:
+- `NEXT_PUBLIC_API_URL` – base URL for the API (e.g., `http://localhost:8079` or your server IP)
+
+## Troubleshooting
+
+- 500 on API calls: check server logs and health
+  - Health: `curl http://<api-host>/api/health`
+  - Logs (Docker): `docker logs -f hypergo-server`
 
 ## License
 

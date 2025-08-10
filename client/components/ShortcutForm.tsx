@@ -15,7 +15,7 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { useToast } from '@/hooks/use-toast';
+import { toast } from 'sonner';
 import {
   Card,
   CardHeader,
@@ -44,7 +44,7 @@ const formSchema = z.object({
 });
 
 export default function ShortcutForm() {
-  const { toast } = useToast();
+  // using shadcn sonner toast
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [createdShortcut, setCreatedShortcut] = useState<string | null>(null);
 
@@ -69,25 +69,16 @@ export default function ShortcutForm() {
       if (response.ok) {
         await response.json();
         setCreatedShortcut(`${process.env.NEXT_PUBLIC_API_URL}/${values.shortcode}`);
-        toast({
-          title: 'Shortcut created',
+        toast.success('Shortcut created', {
           description: 'Your new shortcut has been created successfully.',
         });
         form.reset();
       } else {
-        toast({
-          title: 'Error',
-          description: 'Failed to create shortcut. Please try again.',
-          variant: 'destructive',
-        });
+        toast.error('Failed to create shortcut. Please try again.');
       }
     } catch (error) {
       console.error('Error:', error);
-      toast({
-        title: 'Error',
-        description: 'An unexpected error occurred. Please try again.',
-        variant: 'destructive',
-      });
+      toast.error('An unexpected error occurred. Please try again.');
     } finally {
       setIsSubmitting(false);
     }
@@ -110,7 +101,7 @@ export default function ShortcutForm() {
                   <FormLabel>Shortcode</FormLabel>
                   <FormControl>
                     <div className="flex items-center">
-                      <span className="mr-2 text-sm text-muted-foreground">go/</span>
+                      <span className="text-muted-foreground mr-2 text-sm">go/</span>
                       <Input placeholder="my-shortcode" {...field} className="flex-1" />
                     </div>
                   </FormControl>
@@ -152,7 +143,7 @@ export default function ShortcutForm() {
       </CardContent>
       {createdShortcut && (
         <CardFooter>
-          <div className="w-full rounded-md bg-muted p-4">
+          <div className="bg-muted w-full rounded-md p-4">
             <p className="mb-2 text-sm font-medium">Your new shortcut:</p>
             <div className="flex items-center justify-between">
               <a
@@ -168,10 +159,7 @@ export default function ShortcutForm() {
                 variant="outline"
                 onClick={() => {
                   navigator.clipboard.writeText(createdShortcut);
-                  toast({
-                    title: 'Copied',
-                    description: 'Shortcut URL copied to clipboard',
-                  });
+                  toast.success('Copied', { description: 'Shortcut URL copied to clipboard' });
                 }}
               >
                 <LinkIcon className="mr-2 h-4 w-4" />

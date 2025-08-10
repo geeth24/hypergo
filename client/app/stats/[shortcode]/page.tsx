@@ -6,7 +6,18 @@ import Link from 'next/link';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
-import { ArrowLeft, ExternalLink, Calendar, MousePointerClick } from 'lucide-react';
+import { Separator } from '@/components/ui/separator';
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from '@/components/ui/breadcrumb';
+import { Badge } from '@/components/ui/badge';
+import { toast } from 'sonner';
+import { ArrowLeft, ExternalLink, Calendar, MousePointerClick, Copy } from 'lucide-react';
 import { EditShortcutModal } from '@/components/EditShortcutModal';
 
 interface Shortcut {
@@ -89,13 +100,42 @@ export default function StatsPage() {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <div className="mb-6 flex flex-col items-center justify-between md:flex-row">
-        <h1 className="text-3xl font-bold">Stats for {shortcode}</h1>
-        <div className="mt-2 flex space-x-4">
+      <Breadcrumb>
+        <BreadcrumbList>
+          <BreadcrumbItem>
+            <BreadcrumbLink asChild>
+              <Link href="/">Home</Link>
+            </BreadcrumbLink>
+          </BreadcrumbItem>
+          <BreadcrumbSeparator />
+          <BreadcrumbItem>
+            <BreadcrumbLink href="#">Stats</BreadcrumbLink>
+          </BreadcrumbItem>
+          <BreadcrumbSeparator />
+          <BreadcrumbItem>
+            <BreadcrumbPage>{shortcode}</BreadcrumbPage>
+          </BreadcrumbItem>
+        </BreadcrumbList>
+      </Breadcrumb>
+
+      <div className="mt-6 flex flex-col items-start justify-between gap-4 md:flex-row md:items-center">
+        <div className="flex items-center gap-3">
+          <h1 className="text-3xl font-bold">Stats</h1>
+          <Badge variant="secondary" className="font-mono">
+            go/{shortcode}
+          </Badge>
+        </div>
+        <div className="flex gap-3">
           <Button variant="outline" asChild>
             <Link href="/">
               <ArrowLeft className="mr-2 h-4 w-4" />
-              Back to Shortcuts
+              Back
+            </Link>
+          </Button>
+          <Button variant="outline" asChild>
+            <Link href={`${process.env.NEXT_PUBLIC_API_URL}/${shortcode}`} target="_blank">
+              <ExternalLink className="mr-2 h-4 w-4" />
+              Open Short URL
             </Link>
           </Button>
           <EditShortcutModal
@@ -106,7 +146,7 @@ export default function StatsPage() {
         </div>
       </div>
 
-      <div className="grid gap-6 md:grid-cols-3">
+      <div className="mt-6 grid gap-6 md:grid-cols-3">
         <StatCard
           title="Destination URL"
           value={shortcut.url}
@@ -130,14 +170,26 @@ export default function StatsPage() {
           <CardTitle>Shortcut Details</CardTitle>
         </CardHeader>
         <CardContent>
-          <dl className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+          <dl className="grid grid-cols-1 gap-6 sm:grid-cols-2">
             <div>
-              <dt className="text-sm font-medium text-gray-500">Shortcode</dt>
-              <dd className="mt-1 text-lg font-semibold">{shortcode}</dd>
+              <dt className="text-muted-foreground text-sm font-medium">Shortcode</dt>
+              <dd className="mt-1 flex items-center gap-2 text-lg font-semibold">
+                {shortcode}
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={() => {
+                    navigator.clipboard.writeText(shortcode);
+                    toast.success('Copied shortcode');
+                  }}
+                >
+                  <Copy className="h-4 w-4" />
+                </Button>
+              </dd>
             </div>
             <div>
-              <dt className="text-sm font-medium text-gray-500">Full Short URL</dt>
-              <dd className="mt-1 text-lg font-semibold">
+              <dt className="text-muted-foreground text-sm font-medium">Full Short URL</dt>
+              <dd className="mt-1 flex items-center gap-2 text-lg font-semibold">
                 <Link
                   href={`${process.env.NEXT_PUBLIC_API_URL}/${shortcode}`}
                   target="_blank"
@@ -146,6 +198,42 @@ export default function StatsPage() {
                 >
                   {process.env.NEXT_PUBLIC_API_URL}/{shortcode}
                 </Link>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={() => {
+                    navigator.clipboard.writeText(
+                      `${process.env.NEXT_PUBLIC_API_URL}/${shortcode}`,
+                    );
+                    toast.success('Copied short URL');
+                  }}
+                >
+                  <Copy className="h-4 w-4" />
+                </Button>
+              </dd>
+            </div>
+            <div className="sm:col-span-2">
+              <Separator className="my-2" />
+              <dt className="text-muted-foreground text-sm font-medium">Destination URL</dt>
+              <dd className="mt-1 flex items-center gap-2 text-lg font-semibold break-words">
+                <Link
+                  href={shortcut.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-primary hover:underline"
+                >
+                  {shortcut.url}
+                </Link>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={() => {
+                    navigator.clipboard.writeText(shortcut.url);
+                    toast.success('Copied destination URL');
+                  }}
+                >
+                  <Copy className="h-4 w-4" />
+                </Button>
               </dd>
             </div>
           </dl>
@@ -167,23 +255,23 @@ function StatCard({
   isLink?: boolean;
 }) {
   return (
-    <Card>
+    <Card className="overflow-hidden">
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
         <CardTitle className="overflow-hidden text-sm font-medium">{title}</CardTitle>
         {icon}
       </CardHeader>
-      <CardContent>
+      <CardContent className="min-w-0">
         {isLink ? (
           <Link
             href={value}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-lg font-bold text-primary hover:underline"
+            className="text-primary block text-lg font-bold break-all hover:underline"
           >
             {value}
           </Link>
         ) : (
-          <p className="text-2xl font-bold">{value}</p>
+          <p className="text-2xl font-bold break-all">{value}</p>
         )}
       </CardContent>
     </Card>
@@ -234,9 +322,9 @@ function StatsPageSkeleton() {
 function ErrorMessage({ message }: { message: string }) {
   return (
     <div className="container mx-auto px-4 py-8">
-      <Card className="bg-red-50">
+      <Card className="bg-destructive/10">
         <CardContent className="flex items-center justify-center p-6">
-          <p className="text-red-600">{message}</p>
+          <p className="text-destructive">{message}</p>
         </CardContent>
       </Card>
     </div>
