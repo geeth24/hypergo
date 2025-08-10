@@ -7,7 +7,6 @@ services:
     ports:
       - "80:8079"
     volumes:
-      - ./server/shortcuts.json:/app/shortcuts.json
       - ./logs:/app/logs
     restart: unless-stopped
     healthcheck:
@@ -19,8 +18,6 @@ services:
       - PORT=8079
       - DATABASE_URL=postgres://postgres:postgres@db:5432/hypergo
       - REDIS_URL=redis:6379
-      - IMPORT_FROM_JSON=false
-      - SHORTCUTS_FILE=/app/shortcuts.json
     depends_on:
       - db
       - redis
@@ -37,6 +34,7 @@ services:
       - "3002:3000"
     environment:
       - NODE_ENV=production
+      - NEXT_PUBLIC_API_URL=http://192.168.1.71
     networks:
       - hypergo_network
     depends_on:

@@ -36,17 +36,6 @@ func main() {
 		log.Printf("⚠ Redis cache not available, running without cache")
 	}
 	
-	// Import data from JSON file if enabled (migration only)
-	if cfg.ImportFromJSON {
-		log.Printf("Importing shortcuts from %s", cfg.ShortcutsFile)
-		if err := store.ImportFromJSON(cfg.ShortcutsFile); err != nil {
-			log.Printf("Failed to import shortcuts: %v", err)
-		} else {
-			log.Printf("Successfully imported shortcuts from JSON")
-			log.Printf("You can now set IMPORT_FROM_JSON=false to disable future imports")
-		}
-	}
-	
 	// Create handlers
 	redirectHandler := handlers.NewRedirectHandler(store)
 	apiHandler := handlers.NewAPIHandler(store)

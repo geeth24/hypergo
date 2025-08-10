@@ -1,19 +1,16 @@
 package config
 
 import (
-	"os"
-	"path/filepath"
-	"strconv"
+    "os"
+    "strconv"
 
-	"github.com/joho/godotenv"
+    "github.com/joho/godotenv"
 )
 
 // Config holds the application configuration
 type Config struct {
 	Port          string
-	ShortcutsFile string
 	PublicDir     string
-	ImportFromJSON bool
 	
 	// Database settings
 	DatabaseURL string
@@ -34,19 +31,9 @@ func New() Config {
 		port = "8079"
 	}
 
-	shortcutsFile := os.Getenv("SHORTCUTS_FILE")
-	if shortcutsFile == "" {
-		shortcutsFile = "shortcuts.json"
-	}
-
 	publicDir := os.Getenv("PUBLIC_DIR")
 	if publicDir == "" {
 		publicDir = "./public"
-	}
-	
-	importFromJSON := true
-	if val := os.Getenv("IMPORT_FROM_JSON"); val != "" {
-		importFromJSON = val == "true"
 	}
 
 	// Database settings
@@ -71,17 +58,9 @@ func New() Config {
 	// Make sure the public directory exists
 	os.MkdirAll(publicDir, 0755)
 
-	// Make sure the directory for the shortcuts file exists
-	dir := filepath.Dir(shortcutsFile)
-	if dir != "." {
-		os.MkdirAll(dir, 0755)
-	}
-
 	return Config{
 		Port:          port,
-		ShortcutsFile: shortcutsFile,
 		PublicDir:     publicDir,
-		ImportFromJSON: importFromJSON,
 		DatabaseURL:    databaseURL,
 		RedisURL:       redisURL,
 		RedisPassword:  redisPassword,

@@ -102,11 +102,6 @@ func (s *CombinedStorage) IncrementClicks(shortcode string) error {
 	return nil
 }
 
-// ImportFromJSON imports shortcuts from a JSON file
-func (s *CombinedStorage) ImportFromJSON(filename string) error {
-	return s.db.ImportFromJSON(filename)
-}
-
 // Close closes all connections
 func (s *CombinedStorage) Close() {
 	if s.db != nil {
