@@ -30,6 +30,8 @@ export const metadata: Metadata = {
   alternates: {
     canonical: process.env.NEXT_PUBLIC_SITE_URL || '/',
   },
+  keywords: ['go links', 'self hosted shortener', 'team links', 'hypergo', 'url shortener', 'self hosted'],
+  metadataBase: new URL('https://hypergo.geeth.app'),
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
