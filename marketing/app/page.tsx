@@ -8,7 +8,7 @@ export default function Home() {
   return (
     <div className="container mx-auto px-4 py-12">
 
-      <section className="rounded-xl border bg-card p-10 text-card-foreground shadow-sm">
+      <Card className="p-10">
         <div className="grid items-center gap-10 md:grid-cols-2">
           <div>
             <Badge variant="secondary" className="mb-3">Self‑hosted</Badge>
@@ -39,7 +39,7 @@ export default function Home() {
             </CardContent>
           </Card>
         </div>
-      </section>
+      </Card>
 
       <section id="features" className="mt-16 space-y-8">
         <div>

@@ -2,19 +2,18 @@ import * as React from "react"
 
 import { cn } from "@/lib/utils"
 
-const Card = React.forwardRef<
-  HTMLDivElement,
-  React.HTMLAttributes<HTMLDivElement>
->(({ className, ...props }, ref) => (
-  <div
-    ref={ref}
-    className={cn(
-      "rounded-xl border bg-card text-card-foreground shadow-sm",
-      className
-    )}
-    {...props}
-  />
-))
+const Card = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
+  ({ className, ...props }, ref) => (
+    <div
+      ref={ref}
+      className={cn(
+        'text-card-foreground relative overflow-hidden rounded-xl border border-[color-mix(in_oklab,var(--color-card),black_12%)] bg-gradient-to-b from-[color-mix(in_oklab,var(--color-card),white_6%)] to-[color-mix(in_oklab,var(--color-card),black_2%)] [box-shadow:inset_0_1px_0_0_color-mix(in_oklab,var(--color-card),white_25%),inset_0_-1px_0_0_color-mix(in_oklab,var(--color-card),black_10%),0_1px_2px_hsl(0_0%_0%_/_0.15)]',
+        className,
+      )}
+      {...props}
+    />
+  ),
+);
 Card.displayName = "Card"
 
 const CardHeader = React.forwardRef<

@@ -7,7 +7,7 @@ import { Separator } from '@/components/ui/separator';
 export default function Home() {
   return (
     <div className="space-y-10">
-      <section className="bg-card text-card-foreground rounded-xl border p-8 shadow-sm">
+      <Card className="p-8">
         <div className="flex flex-col items-start justify-between gap-6 md:flex-row md:items-center">
           <div>
             <h2 className="text-3xl font-semibold tracking-tight text-balance md:text-4xl">
@@ -23,7 +23,7 @@ export default function Home() {
             </div>
           </div>
         </div>
-      </section>
+      </Card>
 
       <section id="create" className="grid gap-8 md:grid-cols-2">
         <Card>

@@ -11,11 +11,14 @@ const buttonVariants = cva(
       variant: {
         default:
           'relative overflow-hidden text-primary-foreground border rounded-md bg-gradient-to-b from-[color-mix(in_oklab,var(--color-primary),white_14%)] to-[color-mix(in_oklab,var(--color-primary),black_6%)] border-[color-mix(in_oklab,var(--color-primary),black_25%)] [box-shadow:inset_0_1.5px_0_0_color-mix(in_oklab,var(--color-primary),white_35%),inset_0_-1.5px_0_0_color-mix(in_oklab,var(--color-primary),black_18%),0_1px_2px_hsl(0_0%_0%_/_0.25)] hover:from-[color-mix(in_oklab,var(--color-primary),white_20%)] hover:to-[color-mix(in_oklab,var(--color-primary),black_10%)] active:[box-shadow:inset_0_2px_0_0_color-mix(in_oklab,var(--color-primary),black_10%),inset_0_-2px_0_0_color-mix(in_oklab,var(--color-primary),black_25%),0_1px_1px_hsl(0_0%_0%_/_0.15)] active:translate-y-[0.5px]',
-        destructive: 'bg-destructive text-destructive-foreground shadow-xs hover:bg-destructive/90',
+        destructive:
+          'relative overflow-hidden text-destructive-foreground border rounded-md bg-gradient-to-b from-[color-mix(in_oklab,var(--color-destructive),white_14%)] to-[color-mix(in_oklab,var(--color-destructive),black_6%)] border-[color-mix(in_oklab,var(--color-destructive),black_25%)] [box-shadow:inset_0_1.5px_0_0_color-mix(in_oklab,var(--color-destructive),white_35%),inset_0_-1.5px_0_0_color-mix(in_oklab,var(--color-destructive),black_18%),0_1px_2px_hsl(0_0%_0%_/_0.25)] hover:from-[color-mix(in_oklab,var(--color-destructive),white_20%)] hover:to-[color-mix(in_oklab,var(--color-destructive),black_10%)] active:[box-shadow:inset_0_2px_0_0_color-mix(in_oklab,var(--color-destructive),black_10%),inset_0_-2px_0_0_color-mix(in_oklab,var(--color-destructive),black_25%),0_1px_1px_hsl(0_0%_0%_/_0.15)] active:translate-y-[0.5px]',
         outline:
-          'border border-input bg-background shadow-xs hover:bg-accent hover:text-accent-foreground',
-        secondary: 'bg-secondary text-secondary-foreground shadow-xs hover:bg-secondary/80',
-        ghost: 'hover:bg-accent hover:text-accent-foreground',
+          'relative overflow-hidden border border-input bg-background shadow-xs hover:bg-gradient-to-b hover:from-[color-mix(in_oklab,var(--color-accent),white_8%)] hover:to-[color-mix(in_oklab,var(--color-accent),black_4%)] hover:border-[color-mix(in_oklab,var(--color-accent),black_20%)] hover:text-accent-foreground',
+        secondary:
+          'relative overflow-hidden text-secondary-foreground border rounded-md bg-gradient-to-b from-[color-mix(in_oklab,var(--color-secondary),white_14%)] to-[color-mix(in_oklab,var(--color-secondary),black_6%)] border-[color-mix(in_oklab,var(--color-secondary),black_18%)] [box-shadow:inset_0_1.5px_0_0_color-mix(in_oklab,var(--color-secondary),white_35%),inset_0_-1.5px_0_0_color-mix(in_oklab,var(--color-secondary),black_12%),0_1px_2px_hsl(0_0%_0%_/_0.20)] hover:from-[color-mix(in_oklab,var(--color-secondary),white_20%)] hover:to-[color-mix(in_oklab,var(--color-secondary),black_10%)] active:[box-shadow:inset_0_2px_0_0_color-mix(in_oklab,var(--color-secondary),black_10%),inset_0_-2px_0_0_color-mix(in_oklab,var(--color-secondary),black_20%),0_1px_1px_hsl(0_0%_0%_/_0.12)] active:translate-y-[0.5px]',
+        ghost:
+          'hover:bg-gradient-to-b hover:from-[color-mix(in_oklab,var(--color-accent),white_10%)] hover:to-[color-mix(in_oklab,var(--color-accent),black_6%)] hover:text-accent-foreground',
         link: 'text-primary underline-offset-4 hover:underline',
       },
       size: {
