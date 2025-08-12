@@ -54,7 +54,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                       </Link>
                     </NavigationMenuItem>
                     <NavigationMenuItem>
-                      <Link href="#shortcuts" legacyBehavior passHref>
+                      <Link href="/shortcuts" legacyBehavior passHref>
                         <NavigationMenuLink className="px-3 py-2 text-sm font-medium">
                           Shortcuts
                         </NavigationMenuLink>
