@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"net/http"
+	"strings"
 
 	"hypergo/internal/storage"
 )
@@ -25,8 +26,22 @@ func (r *RedirectHandler) Handler(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 	
-	shortcode := req.URL.Path[1:] // Remove leading slash
-	if shortcode == "api" || shortcode == "" {
+	// Normalize path to extract shortcode
+	path := strings.TrimPrefix(req.URL.Path, "/") // remove leading slash
+
+	// Ignore API and static routes
+	if path == "" || path == "api" || strings.HasPrefix(path, "api/") || strings.HasPrefix(path, "static/") {
+		http.NotFound(w, req)
+		return
+	}
+
+	// Support optional "/go/" prefix so both "/shortcode" and "/go/shortcode" work
+	if strings.HasPrefix(path, "go/") {
+		path = strings.TrimPrefix(path, "go/")
+	}
+
+	shortcode := strings.Trim(path, "/")
+	if shortcode == "" {
 		http.NotFound(w, req)
 		return
 	}
