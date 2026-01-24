@@ -10,7 +10,7 @@ services:
       - ./logs:/app/logs
     restart: unless-stopped
     healthcheck:
-      test: ["CMD", "wget", "--spider", "https://go.geethg.com/admin"]
+      test: ["CMD", "wget", "-q", "--spider", "http://localhost:8079/"]
       interval: 30s
       timeout: 10s
       retries: 3
