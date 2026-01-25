@@ -1,0 +1,108 @@
+# ============================================
+# hypergo - Fullstack Configuration
+# ============================================
+# Go Backend + Next.js Frontend + PostgreSQL + Redis
+
+global:
+  name: hypergo
+  registry: registry.rsft.co
+
+# ============================================
+# Backend API (Go)
+# ============================================
+backend:
+  enabled: true
+
+  image:
+    repository: hypergo-server
+    tag: latest
+    pullPolicy: Always
+
+  port: 8079
+  replicas: 1
+
+  healthCheck:
+    path: /api/health
+
+  resources:
+    requests:
+      cpu: 100m
+      memory: 256Mi
+    limits:
+      cpu: 1000m
+      memory: 1Gi
+
+  ingress:
+    enabled: true
+    host: go.geeth.app
+
+  env:
+    PORT: "8079"
+
+# ============================================
+# Frontend (Next.js)
+# ============================================
+frontend:
+  enabled: true
+
+  image:
+    repository: hypergo-client
+    tag: latest
+    pullPolicy: Always
+
+  port: 3000
+  replicas: 1
+
+  resources:
+    requests:
+      cpu: 100m
+      memory: 256Mi
+    limits:
+      cpu: 500m
+      memory: 512Mi
+
+  ingress:
+    enabled: true
+    host: hypergo.geethg.com
+
+  env:
+    NEXT_PUBLIC_API_URL: https://go.geeth.app
+
+# ============================================
+# PostgreSQL Database
+# ============================================
+postgres:
+  enabled: true
+
+  image: postgres:16-alpine
+
+  database: hypergo
+  username: postgres
+  password: postgres
+
+  port: 5432
+
+  persistence:
+    enabled: true
+    size: 10Gi
+
+  resources:
+    requests:
+      cpu: 100m
+      memory: 256Mi
+    limits:
+      cpu: 500m
+      memory: 512Mi
+
+# ============================================
+# Redis (for caching/sessions)
+# ============================================
+redis:
+  enabled: true
+
+  image: redis:7-alpine
+  port: 6379
+
+  persistence:
+    enabled: true
+    size: 1Gi
