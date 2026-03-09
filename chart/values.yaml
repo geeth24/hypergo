@@ -35,6 +35,8 @@ backend:
   ingress:
     enabled: true
     host: go.geeth.app
+    additionalHosts:
+      - go
 
   env:
     PORT: "8079"

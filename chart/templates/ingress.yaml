@@ -18,6 +18,18 @@ spec:
                 name: {{ .Values.global.name }}-backend
                 port:
                   number: {{ .Values.backend.port }}
+    {{- range .Values.backend.ingress.additionalHosts }}
+    - host: {{ . }}
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ $.Values.global.name }}-backend
+                port:
+                  number: {{ $.Values.backend.port }}
+    {{- end }}
 {{- end }}
 ---
 {{- if .Values.frontend.ingress.enabled }}
