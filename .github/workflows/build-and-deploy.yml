@@ -53,7 +53,8 @@ jobs:
 
       - name: Update image tags in chart
         run: |
-          sed -i 's/tag: latest/tag: ${{ steps.meta.outputs.short_sha }}/' chart/values.yaml
+          sed -i '/repository: hypergo-server/{n;s/tag:.*/tag: ${{ steps.meta.outputs.short_sha }}/;}' chart/values.yaml
+          sed -i '/repository: hypergo-client/{n;s/tag:.*/tag: ${{ steps.meta.outputs.short_sha }}/;}' chart/values.yaml
 
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
