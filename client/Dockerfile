@@ -1,24 +1,16 @@
-FROM node:18-alpine
-
+FROM oven/bun:1 AS base
 WORKDIR /app
 
-# Install pnpm globally using npm
-RUN npm install -g pnpm@latest
+COPY package.json bun.lockb ./
+RUN bun install --frozen-lockfile
 
-# Copy package files (from the client directory)
-COPY package.json pnpm-lock.yaml ./
-
-# Install dependencies
-RUN pnpm install --frozen-lockfile
-
-# Copy the rest of the client code
 COPY . .
 
-# Build the application
-RUN pnpm run build
+ARG NEXT_PUBLIC_API_URL
+ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
 
-# Expose port
+RUN bun run build
+
 EXPOSE 3000
 
-# Start the application
-CMD ["pnpm", "start"]
+CMD ["bun", "start"]
