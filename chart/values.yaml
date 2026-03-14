@@ -65,7 +65,7 @@ frontend:
 
   ingress:
     enabled: true
-    host: hypergo.geethg.com
+    host: go.rsft.co
 
   env:
     NEXT_PUBLIC_API_URL: https://go.geeth.app
