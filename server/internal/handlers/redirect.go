@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"log"
 	"net/http"
 	"strings"
 
@@ -53,7 +54,11 @@ func (r *RedirectHandler) Handler(w http.ResponseWriter, req *http.Request) {
 	}
 	
 	// Update click count asynchronously
-	go r.storage.IncrementClicks(shortcode)
+	go func() {
+		if err := r.storage.IncrementClicks(shortcode); err != nil {
+			log.Printf("failed to increment clicks for %s: %v", shortcode, err)
+		}
+	}()
 	
 	http.Redirect(w, req, shortcut.URL, http.StatusMovedPermanently)
 } 
