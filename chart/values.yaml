@@ -15,7 +15,7 @@ backend:
 
   image:
     repository: hypergo-server
-    tag: 7bcd889
+    tag: 849e330
     pullPolicy: Always
 
   port: 8079
@@ -47,7 +47,7 @@ frontend:
 
   image:
     repository: hypergo-client
-    tag: 7bcd889
+    tag: 849e330
     pullPolicy: Always
 
   port: 3000
