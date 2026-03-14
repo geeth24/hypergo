@@ -26,7 +26,7 @@ backend:
 
   resources:
     requests:
-      cpu: 100m
+      cpu: 10m
       memory: 256Mi
     limits:
       cpu: 1000m
@@ -34,9 +34,7 @@ backend:
 
   ingress:
     enabled: true
-    host: go.geeth.app
-    additionalHosts:
-      - go
+    host: api-go.rsft.co
 
   env:
     PORT: "8079"
@@ -57,7 +55,7 @@ frontend:
 
   resources:
     requests:
-      cpu: 100m
+      cpu: 10m
       memory: 256Mi
     limits:
       cpu: 500m
@@ -68,7 +66,7 @@ frontend:
     host: go.rsft.co
 
   env:
-    NEXT_PUBLIC_API_URL: https://go.geeth.app
+    NEXT_PUBLIC_API_URL: https://api-go.rsft.co
 
 # ============================================
 # PostgreSQL Database
@@ -90,7 +88,7 @@ postgres:
 
   resources:
     requests:
-      cpu: 100m
+      cpu: 10m
       memory: 256Mi
     limits:
       cpu: 500m
